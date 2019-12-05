@@ -1,0 +1,60 @@
+output_every=1
+n_part=10
+
+Main(
+geometry = "1d3v",
+6 interpolation_order = 2,
+7 sim_time = 10*2*math.pi,
+8 timestep = 0.18,
+9 sim_length = [4],
+10 cell_length = [0.2],
+11 number_of_patches = [ 1 ],
+12 print_every = output_every,
+13 bc_em_type_x = [’periodic’]
+14 )
+15
+16 Species(
+17 species_type = ’ion’,
+18 nb_density = 1.0,
+19 initPosition_type = ’regular’,
+20 initMomentum_type = ’cold’,
+21 n_part_per_cell = n_part,
+22 mass = 1836.0,
+23 charge = 1.0,
+24 time_frozen = 10000.0,
+25 bc_part_type_xmin = ’none’,
+26 bc_part_type_xmax = ’none’
+27 )
+28
+29 Species(
+30 species_type = "eon",
+31 initPosition_type = "regular",
+32 initMomentum_type = "cold",
+33 n_part_per_cell = n_part,
+34 mass = 1.0,
+35 charge = -1.0,
+nb_density = cosine(1,xamplitude=0.01,xnumber=1),
+37 bc_part_type_xmin = "none",
+38 bc_part_type_xmax = "none"
+39 )
+40
+41 DiagScalar (
+42 precision = 3,
+43 every = output_every,
+44 vars = [’Utot’, ’Ukin’, ’Uelm’, ’Ukin_eon’, ’Ntot_eon’, ’Uelm_Ex’]
+45 )
+46
+47 DiagParticles(
+48 output = "density",
+49 every = output_every,
+50 species = ["eon"],
+51 axes = [
+52 ["x", 0., Main.sim_length[0], 100],
+53 ["px", -0.01, 0.01, 100]
+54 ]
+55 )
+56
+57 DiagFields(
+58 every = output_every,
+59 fields = [’Jx’, ’Rho_eon’, ’Ex’]
+)
